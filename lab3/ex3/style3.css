@@ -5,7 +5,6 @@
  
 .item {
     flex: 1;
-
     padding: 20px;
     margin: 5px;
     background-color: lightblue;
@@ -17,4 +16,68 @@
     height: 100px;
     display: block;
     margin: 0 auto 10px;
+}
+
+.navbar {
+    background: black;
+    padding: 5px;
+}
+
+.navbar:hover {
+    background: #333;
+}
+
+.nav-links {
+    font: 14px Arial;
+    list-style: none;
+    display: flex; 
+    flex-direction: row;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-item {
+    margin: 0 15px;
+}
+
+.nav-item:hover {
+    background-color: #756d6d;
+}
+
+.nav-item a {
+    color: white;
+    text-decoration: none;
+    text-align: left;
+    padding: 10px 15px;
+    display: block;
+}
+
+
+.dropdown-menu {
+    display: none; 
+    background: white;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    min-width: 150px;
+    position: absolute;
+}
+
+.dropdown-menu li {
+    padding: 10px;
+    
+}
+
+.dropdown-menu a {
+    color: black;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+}
+.dropdown {
+    position: relative;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
 }
