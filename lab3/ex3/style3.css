@@ -1,8 +1,8 @@
-.Container{  
+.Container {
     display: flex;
     flex-direction: row;
 }
- 
+
 .item {
     flex: 1;
     padding: 20px;
@@ -11,6 +11,7 @@
     border: 1px solid darkblue;
     text-align: center;
 }
+
 .item img {
     width: 100px;
     height: 100px;
@@ -30,7 +31,7 @@
 .nav-links {
     font: 14px Arial;
     list-style: none;
-    display: flex; 
+    display: flex;
     flex-direction: row;
     padding: 0;
     margin: 0;
@@ -54,18 +55,20 @@
 
 
 .dropdown-menu {
-    display: none; 
+    font: 12px Arial;
+    display: none;
     background: white;
     list-style: none;
     padding: 0;
     margin: 0;
     min-width: 150px;
     position: absolute;
+    
 }
 
 .dropdown-menu li {
-    padding: 10px;
-    
+    padding: 5px;
+    border-bottom: 1px solid black;
 }
 
 .dropdown-menu a {
@@ -74,6 +77,7 @@
     padding: 10px;
     display: block;
 }
+
 .dropdown {
     position: relative;
 }
