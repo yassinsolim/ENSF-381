@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lab5 - Exercise 3</title>
+</head>
+<body>
+    <input type="text" id="textInput" placeholder="Enter a user number (1-30)..."/>
+    <label id="textLabel"></label>
+    <br><br>
+    <button id="redButton">Red</button>
+    <button id="blueButton">Blue</button>
+    <button id="greenButton">Green</button>
+    <button id="orangeButton">Orange</button>
+    <button id="purpleButton">Purple</button>
+
+    <script type="text/javascript">
+        const textInput = document.getElementById('textInput');
+        const textLabel = document.getElementById('textLabel');
+        const redButton = document.getElementById('redButton');
+        const blueButton = document.getElementById('blueButton');
+        const greenButton = document.getElementById('greenButton');
+        const orangeButton = document.getElementById('orangeButton');
+        const purpleButton = document.getElementById('purpleButton');
+
+        const apiURL = 'https://67c1fd9861d8935867e50298.mockapi.io/users_api';
+
+        async function retrieveData() {
+            try {
+                const response = await fetch(apiURL);
+                const users = await response.json();
+                return users;
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                return [];
+            }
+        }
+
+        textInput.addEventListener('keypress', async function(event) {
+            if (event.key === 'Enter') {
+                const userId = textInput.value.trim();
+                if (!userId || isNaN(userId)) {
+                    textLabel.textContent = "Invalid input. Please enter a valid user number.";
+                    return;
+                }
+                const users = await retrieveData();
+                const user = users.find(u => u.id === userId);
+                
+                if (user) {
+                    textLabel.textContent = `ID: ${user.id}, Name: ${user.first_name}, Group: ${user.user_group}`;
+                } else {
+                    textLabel.textContent = "No users were found with the provided User_ID.";
+                }
+                textInput.value = '';
+            }
+        });
+
+        function changeColor(color) {
+            textLabel.style.color = color;
+        }
+
+        redButton.addEventListener('click', () => changeColor('red'));
+        blueButton.addEventListener('click', () => changeColor('blue'));
+        greenButton.addEventListener('click', () => changeColor('green'));
+        orangeButton.addEventListener('click', () => changeColor('orange'));
+        purpleButton.addEventListener('click', () => changeColor('purple'));
+    </script>
+</body>
+</html>
