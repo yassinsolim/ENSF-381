@@ -3,7 +3,6 @@ import './App.css';
 import Home from './Home';
 import About from './About';
 import Contact from './Contact';
-import EngineeringTopics from './EngineeringTopics';
 
 function App() {
   return (
@@ -20,7 +19,6 @@ function App() {
         title="Contact Us" 
         description="Feel free to reach out to us via email or phone." 
       />
-      <EngineeringTopics />
     </div>
   );
 }
