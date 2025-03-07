@@ -6,7 +6,7 @@ function App() {
   const currentYear = new Date().getFullYear();
 
   // Set a boolean variable for user login status.
-  const isLoggedIn = false; // Change to false if you want to display "Please log in."
+  const isLoggedIn = false; 
 
   return (
     <div className="App">
