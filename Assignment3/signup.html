@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signup - LMS</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <img src="logo.jpg" alt="LMS Logo" style="width: 100px; height: 100px" />
+      <h1>LMS - Learning Management System</h1>
+    </header>
+    <div>
+      <nav>
+        <a href="index.html">Homepage</a>
+      </nav>
+    </div>
+
+    <main class="login">
+      <h2>Sign Up</h2>
+      <form>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required /><br /><br />
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required /><br />
+
+        <label for="Confirm password">Confirm Password:</label>
+        <input type="password" id="Confirm Password" name="Confirm Password" required/><br />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required /><br /><br />
+
+        <button type="button" id="SignupButton">Sign Up</button>
+      </form>
+      <br />
+      <div id="Message"></div>
+      <br />
+      
+      <a href="login.html">Already have an account?Login here</a>
+    </main>
+    <footer>
+      <p>&copy; 2025 LMS. All rights reserved.</p>
+    </footer>
+  </body>
+  <script>
+    const signup = document.getElementById("SignupButton");
+    signup.style.opacity = 0.5;
+    signup.style.margin = "10px";
+    signup.style.padding = "10px";
+    signup.style.borderRadius = "5px";
+    signup.style.backgroundColor = "#4CAF50 ";
+
+    signup.addEventListener("mouseover", function () {
+      signup.style.opacity = 1;
+      signup.style.backgroundColor ="#45A049";
+    });
+
+    signup.addEventListener("mouseout", function () {
+      signup.style.opacity = 0.5;
+    });
+    document.getElementById("SignupButton").addEventListener("click", function (e) {
+        e.preventDefault();
+        const Message = document.getElementById("Message");
+
+        Message.textContent = "";
+        Message.style.display = "none";
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const confirmPassword = document
+          .getElementById("Confirm Password")
+          .value.trim();
+        const email = document.getElementById("email").value.trim();
+
+        let errors = [];
+
+        if (!username) {
+          errors.push("Username is required.");
+        }
+        if (!password) {
+          errors.push("Password is required.");
+        }
+        if (!confirmPassword) {
+          errors.push("Confirm Password is required.");
+        }
+        if (!email) {
+          errors.push("Email is required.");
+        }
+
+        if (username) {
+          const usernameRegex = /^[A-Za-z][A-Za-z0-9_-]{2,19}$/;
+          if (!usernameRegex.test(username)) {
+            errors.push(
+              "Username must be 3-20 characters long, start with a letter, and only contain letters, numbers, hyphens, or underscores."
+            );
+          }
+        }
+
+        if (password) {
+          if (password.length < 8) {
+            errors.push("Password must be at least 8 characters long.");
+          }
+
+          if (!/[A-Z]/.test(password)) {
+            errors.push("Password must contain at least one uppercase letter.");
+          }
+
+          if (!/[a-z]/.test(password)) {
+            errors.push("Password must contain at least one lowercase letter.");
+          }
+
+          if (!/[0-9]/.test(password)) {
+            errors.push("Password must contain at least one number.");
+          }
+
+          if (!/[!@#$%^&*()\-_=+\[\]{}|;:'",.<>?\/`~]/.test(password)) {
+            errors.push(
+              "Password must contain at least one special character: !@#$%^&*()-_=+[]{}|;:'\",.<>?/`~"
+            );
+          }
+
+          if (/\s/.test(password)) {
+            errors.push("Password cannot contain spaces.");
+          }
+        }
+
+        if (password && confirmPassword && password !== confirmPassword) {
+          errors.push("Passwords do not match.");
+        }
+
+        if (email) {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.(com|net|io)$/;
+          if (!emailRegex.test(email)) {
+            errors.push(
+              "Please enter a valid email address (e.g., username@example.com) with a domain of .com, .net, or .io."
+            );
+          }
+        }
+
+        if (errors.length > 0) {
+          displayErrors(errors);
+        } else {
+          window.location.href = "login.html";
+        }
+      });
+
+    function displayErrors(errors) {
+      const Message = document.getElementById("Message");
+      let errorHTML = "";
+      errors.forEach((error) => {
+        errorHTML += `<p>${error}</p>`;
+      });
+      Message.innerHTML = errorHTML;
+      Message.style.display = "block";
+      Message.style.border = "2px solid black";
+      Message.style.padding = "10px";
+    }
+  </script>
+</html>
