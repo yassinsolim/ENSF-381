@@ -71,9 +71,7 @@
         <button class="ans">Submit Answer</button>
         
         <br><br>
-        <a href="leaderboard.html">
-            <button class="FinQz">Finish Quiz</button>
-        </a>
+        <button class="FinQz">Finish Quiz</button>
     </main>
     <footer>
         <p>&copy; 2025 LMS. All rights reserved.</p>
@@ -83,59 +81,149 @@
             // Timer functionality
             let timeLeft = 600; // 10 minutes in seconds
             const timerElement = document.getElementById('timer');
-            const timer = setInterval(function() {
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    window.location.href = 'leaderboard.html';
-                }
-                timeLeft--;
-            }, 1000);
+            let timer = null;
+            let quizSubmitted = false;
+
+            function startTimer() {
+                timer = setInterval(function() {
+                    if (quizSubmitted) {
+                        clearInterval(timer);
+                        return;
+                    }
+
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        submitQuiz(true);
+                    }
+                    timeLeft--;
+                }, 1000);
+            }
+
+            startTimer();
 
             // Score calculation
+            let score = 0;
+            const submitButtons = document.querySelectorAll('.ans');
             const finishButton = document.querySelector('.FinQz');
             const scoreElement = document.getElementById('score');
 
-            finishButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Validate all questions are answered
-                const q1Answered = document.querySelector('input[name="q1"]:checked');
-                const q2Answered = document.querySelectorAll('input[name="q2"]:checked').length > 0;
-                
-                if (!q1Answered || !q2Answered) {
-                    alert('Please answer all questions before finishing the quiz');
-                    return;
-                }
+            // Track submitted answers
+            let submittedAnswers = {
+                q1: false,
+                q2: false
+            };
 
-                // Calculate score
-                let score = 0;
+            // Add data attributes to submit buttons to identify which question they belong to
+            submitButtons[0].setAttribute('data-question', 'q1');
+            submitButtons[1].setAttribute('data-question', 'q2');
 
-                // Question 1 - Radio button
-                const q1Answer = document.querySelector('input[name="q1"]:checked');
-                if (q1Answer && q1Answer.value === 'Hyper Text Markup Language') {
-                    score += 50;
-                }
-
-                // Question 2 - Checkboxes
-                const q2Answers = document.querySelectorAll('input[name="q2"]:checked');
-                q2Answers.forEach(checkbox => {
-                    if (checkbox.value === '<div>' || checkbox.value === '<span>') {
-                        score += 25;
+            submitButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const questionId = this.getAttribute('data-question');
+                    
+                    if (questionId === 'q1') {
+                        const selected = document.querySelector('input[name="q1"]:checked');
+                        if (!selected) {
+                            alert('Please select an answer for Question 1');
+                            return;
+                        }
+                        if (selected.value === 'Hyper Text Markup Language') {
+                            score = (score % 50) + 50;
+                        } else {
+                            score = score % 50;
+                        }
+                        submittedAnswers.q1 = true;
+                        this.textContent = 'Answer Submitted';
+                        this.disabled = true;
+                        document.querySelectorAll('input[name="q1"]').forEach(input => input.disabled = true);
+                    } else if (questionId === 'q2') {
+                        const checkboxes = document.querySelectorAll('input[name="q2"]:checked');
+                        if (checkboxes.length === 0) {
+                            alert('Please select at least one answer for Question 2');
+                            return;
+                        }
+                        let q2Score = 0;
+                        checkboxes.forEach(checkbox => {
+                            if (checkbox.value === '<div>' || checkbox.value === '<span>') {
+                                q2Score += 25;
+                            }
+                        });
+                        score = (score - (score % 50)) + q2Score;
+                        submittedAnswers.q2 = true;
+                        this.textContent = 'Answer Submitted';
+                        this.disabled = true;
+                        document.querySelectorAll('input[name="q2"]').forEach(input => input.disabled = true);
                     }
                 });
+            });
 
-                // Display score
-                scoreElement.style.display = 'block';
-                scoreElement.textContent = `Your Score: ${score}/100`;
+            function submitQuiz(isTimeout = false) {
+                if (quizSubmitted) return;
                 
-                // Disable all inputs and buttons
+                if (!isTimeout) {
+                    // Check if answers are selected
+                    const q1Answered = document.querySelector('input[name="q1"]:checked');
+                    const q2Answered = document.querySelectorAll('input[name="q2"]:checked').length > 0;
+                    
+                    if (!q1Answered || !q2Answered) {
+                        alert('Please answer all questions before finishing the quiz');
+                        return;
+                    }
+
+                    // Check if both answers were submitted
+                    if (!submittedAnswers.q1 || !submittedAnswers.q2) {
+                        alert('Please submit your answers using the Submit Answer buttons before finishing the quiz');
+                        return;
+                    }
+                }
+
+                // Stop the timer
+                quizSubmitted = true;
+                clearInterval(timer);
+                
+                // Disable all inputs and buttons first
                 document.querySelectorAll('input, button').forEach(element => {
                     element.disabled = true;
                 });
+
+                // Create a prominent score display
+                scoreElement.style.display = 'block';
+                scoreElement.style.backgroundColor = '#f0f0f0';
+                scoreElement.style.padding = '20px';
+                scoreElement.style.borderRadius = '10px';
+                scoreElement.style.border = '2px solid #333';
+                scoreElement.style.position = 'fixed';
+                scoreElement.style.top = '50%';
+                scoreElement.style.left = '50%';
+                scoreElement.style.transform = 'translate(-50%, -50%)';
+                scoreElement.style.zIndex = '1000';
+                scoreElement.textContent = `Your Score: ${score}/100`;
+
+                // Add a countdown message
+                const countdownElement = document.createElement('div');
+                countdownElement.style.marginTop = '10px';
+                countdownElement.style.fontSize = '0.8em';
+                scoreElement.appendChild(countdownElement);
+
+                let secondsLeft = 3;
+                const countdownInterval = setInterval(() => {
+                    countdownElement.textContent = `Redirecting to leaderboard in ${secondsLeft} seconds...`;
+                    secondsLeft--;
+
+                    if (secondsLeft < 0) {
+                        clearInterval(countdownInterval);
+                        window.location.href = 'leaderboard.html';
+                    }
+                }, 1000);
+            }
+
+            finishButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                submitQuiz();
             });
         });
     </script>
